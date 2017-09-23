@@ -149,6 +149,9 @@ export default {
     },
     mounted () {
     	this.reszie();
+		// window.onresize=() => {
+		// 	console.log(this.contentSize)
+		// };		
     },
     methods:{
 		reszie () {
