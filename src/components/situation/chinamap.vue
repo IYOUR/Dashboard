@@ -13,7 +13,7 @@
 //import '../util/map/map.js';
 import echarts from 'echarts/src/echarts';
 import 'echarts/src/chart/map';
-import placeList from '../util/map/mapData'
+import placeList from '../../util/map/mapData'
 export default {
 	name: 'chinamap',
 	data () {
@@ -22,7 +22,6 @@ export default {
 		}
 	},
 	mounted () {
-		console.log(echarts)
 		this.chinamap = echarts.init(document.getElementById('chinamap'));
 
 		let mapOption = {
@@ -72,7 +71,7 @@ export default {
 						},
 						data : (function(){
 							var data = [];
-							var len = 3000;
+							var len = 500;
 							var geoCoord
 							while(len--) {
 								geoCoord = placeList[len % placeList.length].geoCoord;
@@ -103,7 +102,7 @@ export default {
 						},
 						data : (function(){
 							var data = [];
-							var len = 1000;
+							var len = 500;
 							var geoCoord
 							while(len--) {
 								geoCoord = placeList[len % placeList.length].geoCoord;
@@ -138,7 +137,7 @@ export default {
 							var len = placeList.length;
 							while(len--) {
 								data.push({
-									name : placeList[len].name,
+									
 									value : 90,
 									geoCoord : placeList[len].geoCoord
 								})

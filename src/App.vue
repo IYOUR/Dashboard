@@ -106,8 +106,12 @@ body::-webkit-scrollbar {
 <template>
     <div id="container">
 		<div class="left-layout">
-			<div class="top"></div>
-			<div class="bottom"></div>
+			<div class="top">
+				<parkcar></parkcar>
+			</div>
+			<div class="bottom">
+				<parkduration></parkduration>
+			</div>
 		</div>			
 		<div class="middle-layout">
 			<div class="head">
@@ -123,15 +127,23 @@ body::-webkit-scrollbar {
 			</div>				
 		</div>
 		<div class="right-layout">
-			<div class="top"></div>
-			<div class="bottom"></div>		
+			<div class="top">
+				<payhistory></payhistory>
+			</div>
+			<div class="bottom">
+				<coupon></coupon>
+			</div>		
 		</div>
     </div>
 </template>
 
 <script>
-import situation from './components/situation'
-import chinamap from './components/chinamap'
+import situation from './components/situation/situation'
+import chinamap from './components/situation/chinamap'
+import parkcar from './components/situation/parkcar'
+import parkduration from './components/situation/parkduration'
+import payhistory from './components/situation/payhistory'
+import coupon from './components/situation/coupon'
 export default {
     name: 'app',
     data () {
@@ -163,6 +175,10 @@ export default {
     components: {
         situation,
 		chinamap,
+		parkcar,
+		parkduration,
+		payhistory,
+		coupon,
     }	
 }
 </script>
