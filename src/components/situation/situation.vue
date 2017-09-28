@@ -1,4 +1,5 @@
 <style scoped lang="less" rel="stylesheet/less">
+@import '../../util/odometer/odometer-default.css';
 .wrap{
 	width:auto;
 	display: flex;
@@ -17,11 +18,11 @@
 				width: 380px;
 				color: #B3CDE6;
 				margin-left: 0;
-			}			
+			}
 		}
 		.parkcar{
 			width:auto;
-			margin-top: 27px;
+			margin-top: 10px;
 			.line{
 				width: 280px;
 				color: #B3CDE6;
@@ -32,7 +33,7 @@
 			opacity: 0.8;
 			font-family: MicrosoftYaHei-Bold;
 			font-size: 15px;
-			color: #B3CDE6;
+			color: #FFFFFF;
 			letter-spacing: 0;			
 		}		
 		.num{
@@ -40,11 +41,12 @@
 			font-weight: lighter;
 			font-size: 60px;
 			color: #FFFFFF;
-			letter-spacing: 0;
+			letter-spacing: 0px;
+			white-space:nowrap; 
 			.unit{
 				font-family: MicrosoftYaHei;
 				font-size: 20px;
-				color: #2273C7;
+				color: #FFFFFF;
 				letter-spacing: 0;	
 				margin-left: 7px;			
 			}		
@@ -132,35 +134,35 @@
 			<div class="charge">
 				<span class="title">今日收入</span></br>
 				<hr class="line"></hr> 	
-				<span class="num">332,617,40<span class="unit">元</span></span>				
+				<span class="num"><span id="charge">332,617,40</span><span class="unit">元</span></span>				
 			</div>	
 			<div class="parkcar">
 				<span class="title">当前停车</span></br>
 				<hr class="line"></hr> 	
-				<span class="num">168,933<span class="unit">辆</span></span>				
+				<span class="num"><span id="carnum">168,933</span><span class="unit">辆</span></span>				
 			</div>					
 		</div>
 		<div class="right">
 			<div class="time">
-				<span>2017年9月5日 星期二 16:00</span>
+				<span>{{currentDate.year}}年{{currentDate.month}}月{{currentDate.day}}日 {{currentDate.week}} {{currentDate.time}}</span>
 			</div>
 			<div class="pie_warp">
 				<div class="out">
-					<span class="ratio">62.5%</span></br>
+					<span class="ratio">{{`${(situationInfo.space_ratio/100).toFixed(2)}%`}}</span></br>
 					<span class="title">当前车位占有率</span>
 					<hr class="line"></hr> 
 				</div>
 				<div class="inside">
-					<span class="ratio">87.5%</span></br>
+					<span class="ratio">{{`${(situationInfo.space_ratio_max/100).toFixed(2)}%`}}</span></br>
 					<span class="title">今日最高车位占有率</span>
 					<hr class="line"></hr> 				
 				</div>			
 				<div class="circle_pie">
 					<svg width="110" height="110" viewbox="0 0 110 110">
-						<circle cx="55" cy="55" r="47" stroke-width="8" stroke="#D1D3D7" fill="none"></circle>
-						<circle cx="55" cy="55" r="47" stroke-width="8" stroke="#2798F7" fill="none" transform="matrix(0,-1,1,0,0,110)" stroke-dasharray="0 1069"></circle>
-						<circle cx="55" cy="55" r="37" stroke-width="8" stroke="#D1D3D7" fill="none"></circle>
-						<circle cx="55" cy="55" r="37" stroke-width="8" stroke="#AA4DC0" fill="none" transform="matrix(0,-1,1,0,0,110)" stroke-dasharray="0 1069"></circle>
+						<circle cx="55" cy="55" r="48" stroke-width="7" stroke="rgba(27,68,123,0.3)" fill="none"></circle>
+						<circle cx="55" cy="55" r="48" stroke-width="7" stroke="#2798F7" fill="none" transform="matrix(0,-1,1,0,0,110)" stroke-dasharray="0 1069"></circle>
+						<circle cx="55" cy="55" r="38" stroke-width="7" stroke="rgba(0,0,0,0)" fill="none"></circle>
+						<circle cx="55" cy="55" r="38" stroke-width="7" stroke="rgba(14, 241, 242, 0.7)" fill="none" transform="matrix(0,-1,1,0,0,110)" stroke-dasharray="0 1069"></circle>
 					</svg>		
 				</div>					
 			</div>
@@ -169,27 +171,100 @@
 </template>
 
 <script>
+const odometer = require('../../util/odometer/odometer');
+import DateFormat from '../..//util/formatDate.js';
 export default {
   	name: 'situation',
+	props: ['situationInfo'],
 	data () {
 		return {
+			currentDate: {
+				year: '2017',
+				month: '1',
+				day: '1',
+				week: '星期日',
+				time: '00:00',
+			},
+			chargeEl: null,
+			carnumEl: null,
+			charge: null,
+			carnum: null,
+			circleOut: null,
+			circleIn: null,
+			iTime: 0,
+			isfirst: true,
 		}
 	},
+    watch: {
+        'situationInfo':{
+            deep:true,
+            handler:function(newVal,oldVal){
+				let now = Date.now();  
+				if(this.isfirst || (now - this.iTime) > 3500) {
+					this.charge.update(newVal.pay_sum/100);
+					this.carnum.update(newVal.parking);
+					if(this.isfirst || (now - this.iTime) > 10000000){
+						this.circle(newVal)
+					}
+					this.iTime = now;
+					this.isfirst = false;
+				}; 
+            }
+        }
+	},	
 	mounted () {
-		this.circle();
+		this.showInfo(this.situationInfo);
+		this.showDate();
+		
+		this.circle1 = document.querySelectorAll("circle")[1];
+		this.circle2 = document.querySelectorAll("circle")[3];	
+		//this.circle(this.situationInfo);	
 	},
     methods:{
-		circle () {
-			let	circle1 = document.querySelectorAll("circle")[1],
-				circle2 = document.querySelectorAll("circle")[3],
-				perimeter1 = Math.PI * 2 * 47,
-				perimeter2 = Math.PI * 2 * 37,
-				percent1 = 0.625,
-				percent2 = 0.875;
-			circle1.setAttribute('stroke-dasharray', perimeter1 * percent1 + " " + perimeter1 * (1- percent1));
-			circle2.setAttribute('stroke-dasharray', perimeter2 * percent2 + " " + perimeter1 * (1- percent2));
+		circle (data) {
+			let perimeter1 = Math.PI * 2 * 48,
+				perimeter2 = Math.PI * 2 * 38,
+				percent1 = data.space_ratio/10000,
+				percent2 = data.space_ratio_max/10000;
+			this.circle1.setAttribute('stroke-dasharray', perimeter1 * percent1 + " " + perimeter1 * (1- percent1));
+			this.circle2.setAttribute('stroke-dasharray', perimeter2 * percent2 + " " + perimeter1 * (1- percent2));
+		},
+		//日期显示
+		showDate() {
+			this.interval= setInterval(() => {
+				let date = new Date(),
+					weekday = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+					this.currentDate = {
+						year: date.getFullYear(),
+						month: date.getMonth()+1,
+						day: date.getDate(),
+						week: weekday[date.getDay()],
+						time: DateFormat.format(date, 'hh:mm'),
+					};
+			}, 1000);	
+		},
+		showInfo(data) {
+			this.chargeEl = document.getElementById('charge');
+			this.carnumEl = document.getElementById('carnum');
+			this.charge = new Odometer({
+				el: this.chargeEl,
+				value: data.pay_sum/100,
+				// Any option (other than auto and selector) can be passed in here
+				format: '(,ddd)',
+				theme: 'default'
+			});
+			this.carnum = new Odometer({
+				el: this.carnumEl,
+				value: data.parking,
+				// Any option (other than auto and selector) can be passed in here
+				format: '(,ddd)',
+				theme: 'default'
+			});	
 		}
-    },	  
+    },
+	beforeDestroy () {
+		clearInterval(this.interval);
+	}			  
 }
 </script>
 

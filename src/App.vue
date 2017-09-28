@@ -69,14 +69,11 @@ body::-webkit-scrollbar {
 		.situation_wrap{
 			width: 846px;
 			height: 916px;
-			//background: #333;
 			.situation{
 				height: 270px;
-				//background: #222;
 			}
 			.map{
 				height: 646px;
-				//background: #777;
 			}			
 		}		
 	}
@@ -107,10 +104,10 @@ body::-webkit-scrollbar {
     <div id="container">
 		<div class="left-layout">
 			<div class="top">
-				<parkcar></parkcar>
+				<parkcar :parkcarInfo="parkcarInfo"></parkcar>
 			</div>
 			<div class="bottom">
-				<parkduration></parkduration>
+				<parkduration :parkdurationInfo="parkdurationInfo"></parkduration>
 			</div>
 		</div>			
 		<div class="middle-layout">
@@ -119,19 +116,19 @@ body::-webkit-scrollbar {
 			</div>	
 			<div class="situation_wrap">
 				<div class="situation">
-					<situation></situation>
+					<situation :situationInfo="situationInfo"></situation>
 				</div>		
 				<div class="map">
-					<chinamap></chinamap>
+					<chinamap :chinamapInfo="chinamapInfo"></chinamap>
 				</div>	
 			</div>				
 		</div>
 		<div class="right-layout">
 			<div class="top">
-				<payhistory></payhistory>
+				<payhistory :payhistoryInfo="payhistoryInfo"></payhistory>
 			</div>
 			<div class="bottom">
-				<coupon></coupon>
+				<coupon :couponInfo="couponInfo"></coupon>
 			</div>		
 		</div>
     </div>
@@ -144,11 +141,39 @@ import parkcar from './components/situation/parkcar'
 import parkduration from './components/situation/parkduration'
 import payhistory from './components/situation/payhistory'
 import coupon from './components/situation/coupon'
+
+const ReconnectingWebSocket = require('./util/ReconnectingWebSocket');
 export default {
     name: 'app',
     data () {
 		return{
-
+			ws: null,
+			parkcarInfo: {
+				inoutCar: [],
+				history: []
+			},
+			couponInfo: {
+				trendData: [],
+				history: []
+			},
+			situationInfo: {
+				pay_sum: '0',
+				parking: '0',
+				space_ratio: '0',
+				space_ratio_max: '0'
+			},
+			payhistoryInfo: [],
+			parkdurationInfo: [],
+			chinamapInfo: {
+				park:{
+					park_count: '0',
+					space_total: '0',
+				},
+				data: {
+					gps: [],
+					status: '',
+				}
+			}
 		}
     },
     computed:{
@@ -160,18 +185,80 @@ export default {
 		}
     },
     mounted () {
+		//日期显示	
     	this.reszie();
+		this.socket();
 		// window.onresize=() => {
 		// 	console.log(this.contentSize)
-		// };		
+		// };	
     },
     methods:{
+		//重新计算内容显示高度以及缩放比例
 		reszie () {
 			let container = document.getElementById("container"),ratio = this.contentSize.width/1920;
 			container.style.transform=`scale(${ratio})`;
 			document.body.style.height=`${ratio*1080}px`;
-		}
+		},
+		socket() {
+			if (window.WebSocket){
+				//this.ws = new ReconnectingWebSocket('ws://180.97.80.42:8793/ws');
+				this.ws = new ReconnectingWebSocket('ws://idata.parkingwang.com:8793/ws');
+			} else {
+				console.log("This browser does not support WebSocket.");
+			}
+			this.ws.onopen = ()=>{
+			
+			};      
+			this.ws.onmessage = (event) => {
+				//console.log(event.data)
+				let info = JSON.parse(event.data)
+				if(info.type_id === 0){
+					this.situationInfo = {
+						pay_sum: info.data.pay_sum,
+						parking: info.data.parking,
+						space_ratio: info.data.space_ratio,
+						space_ratio_max: info.data.space_ratio_max
+					};
+					this.chinamapInfo.park.park_count = info.data.park_count;	
+					this.chinamapInfo.park.space_total = info.data.space_total;	
+				
+					if(info.data.gps && info.data.status){
+						this.chinamapInfo.data.gps = info.data.gps.split(',');
+						this.chinamapInfo.data.status = info.data.status;
+					}							
+				}				
+				if(info.type_id === 1){
+					this.parkcarInfo.inoutCar = info.data;
+				}
+				if(info.type_id === 2){
+					this.parkcarInfo.history = info.data;
+				}
+				if(info.type_id === 3){
+					this.parkdurationInfo = info.data;
+				}
+				if(info.type_id === 4){
+					this.payhistoryInfo = info.data;
+				}	
+				if(info.type_id === 5){
+					this.couponInfo.trendData = info.data;
+				}	
+				if(info.type_id === 6){
+					this.couponInfo.history = info.data;
+				}																				
+			};
+			this.ws.onerror =(event) => {
+				console.log(event);
+			}; 
+			this.ws.onclose =(event) => {
+				console.log('close');
+			};    
+		},		
+
     },
+	beforeDestroy () {
+		this.ws.onclose();
+		this.ws = null;
+	},	  	
     components: {
         situation,
 		chinamap,
