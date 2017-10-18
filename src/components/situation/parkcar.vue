@@ -46,7 +46,9 @@ export default {
         'parkcarInfo':{
             deep:true,
             handler:function(newVal,oldVal){
-                this.createCharts(newVal)
+				if(newVal.inoutCar.length>0&&newVal.history.length>0){
+					this.createCharts(newVal)
+				}
             }
         }
 	},
@@ -55,8 +57,7 @@ export default {
 	},
     methods:{
 		inoutCar_filter(item) {
-			let chartLine = Object.assign([], item.data) 
-			return chartLine.map((ele)=> {
+			return item.data.map((ele)=> {
 				switch (item.type) {
 					case 'ins':
 						return ele.ins;
@@ -68,21 +69,34 @@ export default {
 						return DateFormat.format(DateFormat.formatToDate (ele.ctime), 'MM-dd');
 						break;                                                                                                                                                            
 				}
-				return ele[item.type];
 			});
 		},
 		history_filter(item) {
-			let chartLine = Object.assign([], item.data) 
-			return chartLine.map((ele)=> {
+			//将数据按月分组
+			let data = [];
+			let idx = 0;
+			data[idx] = [item.data[0]];
+			for(let i=1;i<item.data.length;i++){
+				let t = item.data[i]['ctime'].split('-');
+				let f = item.data[i-1]['ctime'].split('-');
+				if(t[1]==f[1]){
+					data[idx].push(item.data[i]);
+				}else{
+					idx = idx+1;
+					data[idx] = [];
+					data[idx].push(item.data[i]);
+				}
+			}
+			//取每个月最后一天的数据
+			return data.map((ele,idx)=> {
 				switch (item.type) {
 					case 'count':
-						return ele.count;
+						return ele[ele.length-1].count
 						break;  
 					case 'ctime':
-						return DateFormat.format(DateFormat.formatToDate (ele.ctime), 'yyyy-MM');
+						return DateFormat.format(DateFormat.formatToDate (ele[ele.length-1].ctime), 'yyyy-MM')
 						break;                                                                                                                                                            
 				}
-				return ele[item.type];
 			});
 		},		
 		createCharts(data) {

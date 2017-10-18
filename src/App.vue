@@ -147,6 +147,10 @@ export default {
     name: 'app',
     data () {
 		return{
+			contentSize:{
+				width: document.body.clientWidth,
+				height: document.body.clientHeight
+			},		
 			ws: null,
 			parkcarInfo: {
 				inoutCar: [],
@@ -176,22 +180,32 @@ export default {
 			}
 		}
     },
-    computed:{
-		contentSize () {
-			return {
-			width: document.body.clientWidth,
-			height: document.body.clientHeight
-			}  
-		}
-    },
+    // computed:{
+	// 	contentSize () {
+	// 		return {
+	// 		width: document.body.clientWidth,
+	// 		height: document.body.clientHeight
+	// 		}  
+	// 	}
+    // },
     mounted () {
 		//日期显示	
     	this.reszie();
 		this.socket();
-		// window.onresize=() => {
-		// 	console.log(this.contentSize)
-		// };	
+		window.onresize=() => {
+			this.contentSize = {
+				width: document.body.clientWidth,
+				height: document.body.clientHeight				
+			}
+		};	
     },
+	watch: {
+        'contentSize':{
+            handler:function(newVal,oldVal){
+				this.reszie();	
+            }
+        }
+	},
     methods:{
 		//重新计算内容显示高度以及缩放比例
 		reszie () {

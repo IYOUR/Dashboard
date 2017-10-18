@@ -5,6 +5,10 @@
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;	
+	justify-content: space-between;  
+	/*防止chrome浏览器Transition闪动Bug*/  
+	-webkit-backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
 	.left{
 		width: 50%;
 		height: 270px;
@@ -203,9 +207,7 @@ export default {
 				if(this.isfirst || (now - this.iTime) > 3500) {
 					this.charge.update(newVal.pay_sum/100);
 					this.carnum.update(newVal.parking);
-					if(this.isfirst || (now - this.iTime) > 10000000){
-						this.circle(newVal)
-					}
+					this.circle(newVal);
 					this.iTime = now;
 					this.isfirst = false;
 				}; 

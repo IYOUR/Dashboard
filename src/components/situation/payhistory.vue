@@ -55,6 +55,7 @@ export default {
 					data[idx].push(item.data[i]);
 				}
 			}		
+			
 			//取每个月最后一天的数据
 			return data.map((ele,idx)=> {
 				switch (item.type) {
