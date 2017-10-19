@@ -1,14 +1,20 @@
 <style lang="less" rel="stylesheet/less">
+html {
+    font: normal 16px / 26px "Open Sans","Helvetica Neue",Helvetica,Arial,Microsoft Yahei,sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    background: #fff;
+    color: #888888;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
 body {
-  margin: 0;
+    margin: 0
 }
 body::-webkit-scrollbar {
     display: none;
 }
 #container {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     width: 1920px;
     height: 1080px;
 	-webkit-box-sizing: border-box;

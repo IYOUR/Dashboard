@@ -1,5 +1,6 @@
 <style scoped lang="less" rel="stylesheet/less">
 @import '../../util/odometer/odometer-default.css';
+
 .wrap{
 	width:auto;
 	display: flex;
@@ -45,7 +46,7 @@
 			font-weight: lighter;
 			font-size: 60px;
 			color: #FFFFFF;
-			letter-spacing: 0px;
+			letter-spacing: 3px;
 			white-space:nowrap; 
 			.unit{
 				font-family: MicrosoftYaHei;
