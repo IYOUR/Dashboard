@@ -20,8 +20,9 @@ body::-webkit-scrollbar {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box; 
 	padding:15px;
-    background-image:url(./assets/background.jpg);
-    background-size:contain;
+    //background-image:url(./assets/background.jpg);
+	//background-size:contain;
+	background: radial-gradient(farthest-side, #182158 0%, #030414 100%);
     transform: scale(1);
     transform-origin: left top 0px;
     display: -webkit-flex; 
