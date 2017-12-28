@@ -32,7 +32,7 @@
 <script>
 import echarts from 'echarts/src/echarts';
 import 'echarts/src/chart/line';
-import DateFormat from '../..//util/formatDate.js';
+import DateFormat from '../../util/formatDate.js';
 export default {
   	name: 'parkcar',
 	props: ['parkcarInfo'],
@@ -58,12 +58,13 @@ export default {
     methods:{
 		inoutCar_filter(item) {
 			return item.data.map((ele)=> {
+				//iDT Show的数据 等比放大1.5倍
 				switch (item.type) {
 					case 'ins':
-						return ele.ins;
+						return parseInt(ele.ins*1.5);
 						break;   
 					case 'outs':
-						return ele.outs;
+						return parseInt(ele.outs*1.5);
 						break;  
 					case 'ctime':
 						return DateFormat.format(DateFormat.formatToDate (ele.ctime), 'MM-dd');
@@ -91,7 +92,7 @@ export default {
 			return data.map((ele,idx)=> {
 				switch (item.type) {
 					case 'count':
-						return ele[ele.length-1].count
+						return parseInt(ele[ele.length-1].count*1.5)
 						break;  
 					case 'ctime':
 						return DateFormat.format(DateFormat.formatToDate (ele[ele.length-1].ctime), 'yyyy-MM')

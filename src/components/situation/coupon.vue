@@ -59,7 +59,7 @@ export default {
 			return chartLine.map((ele)=> {
 				switch (item.type) {  
 					case 'count':
-						return ele.count;
+						return parseInt(ele.count*1.5);
 						break;  
 					case 'ctime':
 						return DateFormat.format(DateFormat.formatToDate (ele.ctime), 'MM-dd');
@@ -73,7 +73,7 @@ export default {
 			return chartLine.map((ele)=> {
 				switch (item.type) {
 					case 'count':
-						return ele.count;
+						return parseInt(ele.count*1.5);
 						break;  
 					case 'name':
 						if(ele.name.length>8){

@@ -50,12 +50,12 @@
 	<div class="wrap">
 		<div class="carnum">
 			<div class="left">
-				<span class="num">{{chinamapInfo.park.park_count}}</span></br>
+				<span class="num">{{parseInt(chinamapInfo.park.park_count *1.5)}}</span></br>
 				<span class="title">停车场数量</span>
 			</div>
 			<hr class="line"></hr>
 			<div class="right">
-				<span class="num">{{chinamapInfo.park.space_total}}</span></br>
+				<span class="num">{{parseInt(chinamapInfo.park.space_total *1.5)}}</span></br>
 				<span class="title">车位数</span>			
 			</div>
 		</div>
@@ -71,6 +71,7 @@
 import echarts from 'echarts/src/echarts';
 import 'echarts/src/chart/map';
 import placeList from '../../util/map/mapData'
+//var placeList = [{name:'demo', geoCoord:[0, 0]}];
 export default {
 	name: 'chinamap',
 	props: ['chinamapInfo'],

@@ -92,7 +92,7 @@
 				text-align: left;
 				position: absolute;
 				top: 85px;
-    			left: 50px;
+    			left: 55px;
 				.ratio{
 					font-family: MicrosoftYaHei;
 					font-size: 16px;
@@ -139,12 +139,12 @@
 			<div class="charge">
 				<span class="title">今日收入</span></br>
 				<hr class="line"></hr> 	
-				<span class="num"><span id="charge">332,617,40</span><span class="unit">元</span></span>				
+				<span class="num"><span id="charge">000,000</span><span class="unit">元</span></span>				
 			</div>	
 			<div class="parkcar">
 				<span class="title">当前停车</span></br>
 				<hr class="line"></hr> 	
-				<span class="num"><span id="carnum">168,933</span><span class="unit">辆</span></span>				
+				<span class="num"><span id="carnum">000,000</span><span class="unit">辆</span></span>				
 			</div>					
 		</div>
 		<div class="right">
@@ -206,8 +206,9 @@ export default {
             handler:function(newVal,oldVal){
 				let now = Date.now();  
 				if(this.isfirst || (now - this.iTime) > 3500) {
-					this.charge.update(newVal.pay_sum/100);
-					this.carnum.update(newVal.parking);
+					//iDT Show的数据 等比放大1.5倍
+					this.charge.update(newVal.pay_sum/100*1.5);
+					this.carnum.update(newVal.parking*1.5);
 					this.circle(newVal);
 					this.iTime = now;
 					this.isfirst = false;
@@ -251,14 +252,15 @@ export default {
 			this.carnumEl = document.getElementById('carnum');
 			this.charge = new Odometer({
 				el: this.chargeEl,
-				value: data.pay_sum/100,
+				//iDT Show的数据 等比放大1.5倍
+				value: data.pay_sum/100*1.5,
 				// Any option (other than auto and selector) can be passed in here
 				format: '(,ddd)',
 				theme: 'default'
 			});
 			this.carnum = new Odometer({
 				el: this.carnumEl,
-				value: data.parking,
+				value: data.parking*1.5,
 				// Any option (other than auto and selector) can be passed in here
 				format: '(,ddd)',
 				theme: 'default'

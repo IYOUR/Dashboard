@@ -18,7 +18,7 @@
 <script>
 import echarts from 'echarts/src/echarts';
 import 'echarts/src/chart/bar';
-import DateFormat from '../..//util/formatDate.js';
+import DateFormat from '../../util/formatDate.js';
 export default {
   	name: 'payhistory',
 	props: ['payhistoryInfo'],
@@ -60,7 +60,7 @@ export default {
 			return data.map((ele,idx)=> {
 				switch (item.type) {
 					case 'count':
-						return ele[ele.length-1].count
+						return parseInt(ele[ele.length-1].count*1.5)
 						break;  
 					case 'ctime':
 						return DateFormat.format(DateFormat.formatToDate (ele[ele.length-1].ctime), 'yyyy-MM')

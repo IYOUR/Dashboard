@@ -41,14 +41,16 @@ export default {
 	},
     methods:{
 		parkduration_filter(data) {
+			let sum = data.duration_10m+data.duration_30m+data.duration_60m+
+					  data.duration_120m+data.duration_360m+data.duration_360m_up+data.duration_24h_up;
 			return [
-				data[0] = data.duration_10m,
-				data[0] = data.duration_30m,
-				data[0] = data.duration_60m,
-				data[0] = data.duration_120m,
-				data[0] = data.duration_360m,
-				data[0] = data.duration_360m_up,
-				data[0] = data.duration_24h_up,
+				(data.duration_10m/sum*100).toFixed(2),
+				(data.duration_30m/sum*100).toFixed(2),
+				(data.duration_60m/sum*100).toFixed(2),
+				(data.duration_120m/sum*100).toFixed(2),
+				(data.duration_360m/sum*100).toFixed(2),
+				(data.duration_360m_up/sum*100).toFixed(2),
+				(data.duration_24h_up/sum*100).toFixed(2),
 			];
 		},		
 		createCharts(data) {
@@ -69,7 +71,7 @@ export default {
 					x2: 30,
 					y2:35,
 					borderWidth: 0,
-					width: '74%'
+					width: '75%'
 				},
 				tooltip : {
 					show: false,
@@ -144,6 +146,7 @@ export default {
 								label: {
 									show: true,
 									position: 'right',
+									formatter: '{c}%',
 									textStyle: {  
 										fontFamily:'MicrosoftYaHei',  
 										fontSize : '10',  
